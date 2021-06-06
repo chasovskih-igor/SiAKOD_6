@@ -6,9 +6,9 @@ namespace SiAKOD_6
 {
     public enum BoatPosition
     {
-        Left,
-        Right,
-        ToLeft,
-        ToRight
+        Left = 1,
+        Right = 2,
+        ToLeft= 3,
+        ToRight = 4
     }
 }

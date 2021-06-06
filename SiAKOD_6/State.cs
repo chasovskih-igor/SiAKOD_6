@@ -33,7 +33,7 @@ namespace SiAKOD_6
         {
             if (Pos == BoatPosition.ToRight || Pos == BoatPosition.ToLeft)
             {
-                return LeftCoast.IsMore() || RightCoast.IsMore();
+                return LeftCoast.IsMore() || RightCoast.IsMore() || (Boat.EaterCount == 0 && Boat.ManCount == 0);
             }
             else return false;
         }
@@ -41,18 +41,12 @@ namespace SiAKOD_6
         {
             if (Pos == BoatPosition.Left)
             {
-                LeftCoast.ManCount -= man;
-                LeftCoast.EaterCount -= eater;
-                Boat.ManCount += man;
-                Boat.EaterCount += eater;
+                Boat.GetFrom(LeftCoast, man, eater);
                 Pos = BoatPosition.ToRight;
             }
             if (Pos == BoatPosition.Right)
             {
-                RightCoast.ManCount -= man;
-                RightCoast.EaterCount -= eater;
-                Boat.ManCount += man;
-                Boat.EaterCount += eater;
+                Boat.GetFrom(RightCoast, man, eater);
                 Pos = BoatPosition.ToLeft;
             }
         }
@@ -66,7 +60,7 @@ namespace SiAKOD_6
                 Boat.EaterCount = 0;
                 Pos = BoatPosition.Left;
             }
-            if (Pos == BoatPosition.ToRight)
+            else if (Pos == BoatPosition.ToRight)
             {
                 RightCoast.ManCount += Boat.ManCount;
                 RightCoast.EaterCount += Boat.EaterCount;
@@ -75,11 +69,7 @@ namespace SiAKOD_6
                 Pos = BoatPosition.Right;
             }
         }
-        public void NextStep(int man, int eater)
-        {
-            if (Pos == BoatPosition.Left || Pos == BoatPosition.Right) Load(man, eater);
-            else Unload();
-        }
+
         public override bool Equals(object obj)
         {
             if (obj == null) return false;
@@ -102,20 +92,30 @@ namespace SiAKOD_6
             }
             else
             {
+                State s;
                 for (int i = 0; i < 3; i++)
                 {
-                    State s = new State(LeftCoast.Clone(), RightCoast.Clone(), Boat.Clone(), Pos);
-                    if ()
+                    s = new State(LeftCoast.Clone(), RightCoast.Clone(), Boat.Clone(), Pos);
                     s.Load(i, 2 - i);
-                    states.Add(s);
+                    if (!s.IsLose())
+                        states.Add(s);
                 }
+                s = new State(LeftCoast.Clone(), RightCoast.Clone(), Boat.Clone(), Pos);
+                s.Load(1, 0);
+                if (!s.IsLose())
+                    states.Add(s);
+                s = new State(LeftCoast.Clone(), RightCoast.Clone(), Boat.Clone(), Pos);
+                s.Load(0, 1);
+                if (!s.IsLose())
+                    states.Add(s);
             }
             return states;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(LeftCoast, RightCoast, Boat, Pos);
+            String s = LeftCoast.GetHashCode().ToString() + RightCoast.GetHashCode().ToString() + Boat.GetHashCode().ToString() + ((int)Pos).ToString();
+            return Int32.Parse(s);
         }
     }
 }

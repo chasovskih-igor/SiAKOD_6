@@ -18,9 +18,33 @@ namespace SiAKOD_6
             EaterCount = 0;
             ManCount = 0;
         }
+
+        public void GetFrom(Place place, int m, int e)
+        {
+            if (place.EaterCount >= e)
+            {
+                EaterCount += e;
+                place.EaterCount -= e;
+            }
+            else
+            {
+                EaterCount += place.EaterCount;
+                place.EaterCount = 0;
+            }
+            if (place.ManCount >= m)
+            {
+                ManCount += m;
+                place.ManCount -= m;
+            }
+            else
+            {
+                ManCount += place.ManCount;
+                place.ManCount = 0;
+            }
+        }
         public bool IsMore()
         {
-            if (EaterCount != 0 || ManCount != 0) return false;
+            if (EaterCount == 0 || ManCount == 0) return false;
             return (EaterCount != ManCount);
         }
         public override bool Equals(object obj)
@@ -37,7 +61,7 @@ namespace SiAKOD_6
         }
         public Place Clone()
         {
-            return new Place(EaterCount, ManCount);
+            return new Place(ManCount, EaterCount);
         }
         public override string ToString()
         {
@@ -55,6 +79,11 @@ namespace SiAKOD_6
                 return "_";
             }
             return s;
+        }
+
+        public override int GetHashCode()
+        {
+            return Int32.Parse(ManCount.ToString()+EaterCount.ToString());
         }
     }
 }

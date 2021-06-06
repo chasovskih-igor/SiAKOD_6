@@ -11,9 +11,10 @@ namespace SiAKOD_6
             List<State> path = new List<State>();
             State s = end;
             path.Add(s);
-            while (path[path.Count - 1] != start)
-            {
-                path.Add(find[path[path.Count - 1]]);
+            while (path[path.Count - 1] != start) { 
+                bool x = find.ContainsKey(path[path.Count - 1]);
+                State t = find[path[path.Count - 1]];
+                path.Add(t);
             }
             path.Reverse();
             return path;
@@ -30,16 +31,18 @@ namespace SiAKOD_6
                 find.RemoveAt(0);
                 wasSearch.Add(t);
                 List<State> temp = t.NextStates();
-                if (wasSearch.Count > 1)
-                {
-                    Console.WriteLine(wasSearch[0] + " " + wasSearch[wasSearch.Count - 1] + " " + wasSearch[0].Equals(wasSearch[wasSearch.Count-1]));
-                }
                 foreach (State s in temp)
                 {
-                    if (wasSearch.Contains(s)) { continue; }
+
+                    if (wasSearch.Contains(s))
+                    {
+                        continue;
+                    }
+
                     if (!s.IsLose())
                     {
                         find.Add(s);
+                        if (!pathToStart.ContainsKey(s))
                         pathToStart.Add(s, t);
                     }
 
